@@ -34,4 +34,4 @@ public class DemoController : MonoBehaviour
         GUI.Label(new Rect(20, 56, 900, 36),
         "Throw On Detach: " + target.throwOnDetach + " [F4]", style);
     }
-}
+}   
