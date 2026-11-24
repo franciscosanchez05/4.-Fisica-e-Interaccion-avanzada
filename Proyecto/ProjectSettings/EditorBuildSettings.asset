@@ -6,7 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/_Proyecto/Escenas/Taller_Final.unity
+    guid: e9d26ff83aaa279489af106b421a70f1
+  - enabled: 1
+    path: Assets/_Proyecto/Escenas/Taller_Inicial.unity
+    guid: 12bd80f23791d904d947f9c4f57ed5a5
+  - enabled: 1
+    path: Assets/_Proyecto/Escenas/Reto_Solucion.unity
+    guid: d7735cd7d2feb4c41830ae6d3623679d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

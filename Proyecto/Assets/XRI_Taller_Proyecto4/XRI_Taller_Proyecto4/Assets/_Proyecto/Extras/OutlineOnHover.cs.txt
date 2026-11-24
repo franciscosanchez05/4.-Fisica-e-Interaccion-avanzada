@@ -1,0 +1,107 @@
+// =====================================================================
+// OutlineOnHover  (EXTRA OPCIONAL: necesita el paquete gratuito "Quick Outline")
+//
+// Este archivo tiene extension .txt a proposito: si estuviera como .cs, el
+// proyecto NO compilaria hasta importar Quick Outline (porque usa su clase
+// "Outline"). Para activarlo:
+//   1. Importa "Quick Outline" (Chris Nolet) desde la Asset Store (es gratuito).
+//   2. Mueve este archivo a Assets/_Proyecto/Scripts/Runtime y cambia su
+//      extension de .cs.txt a .cs
+//   3. Selecciona una herramienta, anade el componente Outline (Quick Outline)
+//      y este script OutlineOnHover.
+//
+// PARA QUE SIRVE
+//   Activa el contorno de color alrededor del objeto cuando la mano se acerca
+//   (amarillo) o lo agarra (verde). Ignora los sockets. Es el mismo patron
+//   que GrabFeedback pero con contorno en vez de cambio de color.
+// =====================================================================
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+
+namespace TallerXRI
+{
+    [RequireComponent(typeof(XRBaseInteractable), typeof(Outline))]
+    public class OutlineOnHover : MonoBehaviour
+    {
+        [SerializeField] private Color hoverColor = Color.yellow;
+        [SerializeField] private Color selectColor = Color.green;
+        [SerializeField] private float width = 4f;
+
+        private XRBaseInteractable interactable;
+        private Outline outline;
+        private int hoverCount;
+        private int selectCount;
+
+        private void Awake()
+        {
+            interactable = GetComponent<XRBaseInteractable>();
+            outline = GetComponent<Outline>();
+            outline.OutlineWidth = width;
+            outline.enabled = false; // empieza apagado
+        }
+
+        private void OnEnable()
+        {
+            interactable.hoverEntered.AddListener(OnHoverEntered);
+            interactable.hoverExited.AddListener(OnHoverExited);
+            interactable.selectEntered.AddListener(OnSelectEntered);
+            interactable.selectExited.AddListener(OnSelectExited);
+        }
+
+        private void OnDisable()
+        {
+            interactable.hoverEntered.RemoveListener(OnHoverEntered);
+            interactable.hoverExited.RemoveListener(OnHoverExited);
+            interactable.selectEntered.RemoveListener(OnSelectEntered);
+            interactable.selectExited.RemoveListener(OnSelectExited);
+        }
+
+        private void OnHoverEntered(HoverEnterEventArgs args)
+        {
+            if (args.interactorObject is XRSocketInteractor) { return; }
+            hoverCount++;
+            Refresh();
+        }
+
+        private void OnHoverExited(HoverExitEventArgs args)
+        {
+            if (args.interactorObject is XRSocketInteractor) { return; }
+            hoverCount = Mathf.Max(0, hoverCount - 1);
+            Refresh();
+        }
+
+        private void OnSelectEntered(SelectEnterEventArgs args)
+        {
+            if (args.interactorObject is XRSocketInteractor) { return; }
+            selectCount++;
+            Refresh();
+        }
+
+        private void OnSelectExited(SelectExitEventArgs args)
+        {
+            if (args.interactorObject is XRSocketInteractor) { return; }
+            selectCount = Mathf.Max(0, selectCount - 1);
+            Refresh();
+        }
+
+        private void Refresh()
+        {
+            if (selectCount > 0)
+            {
+                outline.OutlineColor = selectColor;
+                outline.enabled = true;
+            }
+            else if (hoverCount > 0)
+            {
+                outline.OutlineColor = hoverColor;
+                outline.enabled = true;
+            }
+            else
+            {
+                outline.enabled = false;
+            }
+        }
+    }
+}
