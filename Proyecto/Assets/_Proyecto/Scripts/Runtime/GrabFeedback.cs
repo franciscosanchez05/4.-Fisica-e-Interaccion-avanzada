@@ -5,28 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 namespace TallerXRI
 {
-    /// <summary>
-    /// GrabFeedback
-    /// =====================================================================
-    /// PARA QUÉ SIRVE
-    ///   Da "feedback" al jugador (la idea de los AFFORDANCES): el objeto cambia
-    ///   de color cuando la mano se acerca (hover) o lo agarra (select) y
-    ///   reproduce sonidos al acercar, agarrar y soltar.
-    ///
-    ///   Es el "plan B" sencillo del sistema de affordances de XRI: hace lo
-    ///   mismo con unas pocas líneas de código y no depende de que ese sistema
-    ///   exista en la versión del paquete.
-    ///
-    /// DETALLE IMPORTANTE: IGNORA LOS SOCKETS
-    ///   Cuando una herramienta está colocada en su socket, el socket también
-    ///   la "selecciona". Si no lo ignoráramos, la herramienta se quedaría
-    ///   verde dentro del hueco. Por eso, en cada evento, comprobamos si el
-    ///   interactor es un XRSocketInteractor y, en ese caso, no hacemos nada.
-    ///
-    /// CÓMO SE USA
-    ///   Ponlo en los objetos con XR Grab Interactable. Si no rellenas la lista
-    ///   de Renderers, usa todos los renderers del objeto y sus hijos.
-    /// </summary>
+    
     [RequireComponent(typeof(XRBaseInteractable))]
     public class GrabFeedback : MonoBehaviour
     {
@@ -57,9 +36,6 @@ namespace TallerXRI
                 renderers = GetComponentsInChildren<Renderer>();
             }
 
-            // Guardamos el color original de cada renderer para poder restaurarlo.
-            // Nota: renderer.material crea una COPIA del material para este objeto,
-            // así que cambiar su color no afecta a otros objetos que compartan material.
             originalColors = new Color[renderers.Length];
             for (int i = 0; i < renderers.Length; i++)
             {
@@ -70,7 +46,7 @@ namespace TallerXRI
             {
                 audioSource = gameObject.AddComponent<AudioSource>();
                 audioSource.playOnAwake = false;
-                audioSource.spatialBlend = 1f; // 1 = sonido totalmente 3D (se oye desde donde está el objeto)
+                audioSource.spatialBlend = 1f; 
             }
         }
 
@@ -92,7 +68,7 @@ namespace TallerXRI
 
         private void OnHoverEntered(HoverEnterEventArgs args)
         {
-            // args.interactorObject es QUIÉN está interactuando (mano, rayo, socket...).
+            
             if (args.interactorObject is XRSocketInteractor) { return; }
 
             hoverCount++;
@@ -126,7 +102,7 @@ namespace TallerXRI
             ApplyColor();
         }
 
-        // Prioridad de color: agarrado > hover > color original.
+        
         private void ApplyColor()
         {
             for (int i = 0; i < renderers.Length; i++)
@@ -148,7 +124,7 @@ namespace TallerXRI
 
         private void Play(AudioClip clip)
         {
-            // PlayOneShot permite que se solapen varios sonidos sin cortarse.
+            
             if (clip != null && audioSource != null)
             {
                 audioSource.PlayOneShot(clip);
